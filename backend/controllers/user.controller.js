@@ -1,6 +1,10 @@
+import bcrypt from "bcryptjs"
+import {v2 as cloudinary} from "cloudinary"
+
+// models
 import Notification from "../models/notification.model.js";
 import User from "../models/user.model.js";
-import bcrypt from "bcryptjs"
+
 
 export const getUserProfile = async (req,res) => {
     const {username} = req.params
@@ -118,7 +122,7 @@ export const updateUserProfile = async (req,res) => {
     const userId = req.user._id;
 
     try {
-        const user = await User.findById(userId)
+        let user = await User.findById(userId)
         
         if((!newPassword && currentPassword) || (newPassword && !currentPassword)){
             return res.status(401).json({
@@ -141,16 +145,43 @@ export const updateUserProfile = async (req,res) => {
             user.password = await bcrypt.hash(newPassword, salt)
         }
 
-        // if(profileImg){
+        if(profileImg){
+            if(user.profileImg){
+                await cloudinary.uploader.destroy(user.profileImg.split("/").pop().split(".")[0]) // delete old image from cloudinary
+            }
+
+            const uploadedResponse =  await cloudinary.uploader.upload(profileImg)
+            profileImg = uploadedResponse.secure_url;
+        }
+
+        if(coverImg){
+
+            if(user.coverImg){
+                await cloudinary.uploader.destroy(user.coverImg.split("/").pop().split(".")[0])
+            }
             
-        // }
+            const uploadedResponse =  await cloudinary.uploader.upload(coverImg)
+            coverImg = uploadedResponse.secure_url;
+        }
 
-        // if(coverImg){
+        user.fullName = fullName || user.fullName;
+        user.email = email || user.email;
+        user.username = username || user.username;
+        user.bio = bio || user.bio;
+        user.link = link || user.link;
+        user.profileImg = profileImg || user.profileImg;
+        user.coverImg = coverImg || user.coverImg;
 
-        // }
+        await user.save();
 
+        user.password = null
+
+        return res.status(200).json(user);
 
     } catch (error) {
-        
+        console.log("Error in updateUser:", error.message);
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
