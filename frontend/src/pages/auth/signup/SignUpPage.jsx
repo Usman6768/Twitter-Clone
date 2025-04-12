@@ -39,12 +39,9 @@ const SignUpPage = () => {
 				throw error;
 			}
 		},
-
 		onSuccess: () => {	
 			toast.success("Account created successfully");
 		}
-
-
 	});
 
 	const handleSubmit = (e) => {
@@ -56,7 +53,6 @@ const SignUpPage = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	
 
 	return (
 		<div className='max-w-screen-xl mx-auto flex h-screen px-10'>

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useMutation} from "@tanstack/react-query"
+import { Link, Navigate } from "react-router-dom";
+import { useMutation, useQueryClient} from "@tanstack/react-query"
 
 import XSvg from "../../../components/svgs/X";
 
@@ -13,6 +13,8 @@ const LoginPage = () => {
 		username: "",
 		password: "",
 	});
+
+	const queryClient = useQueryClient();
 
 	const {mutate:loginMutation, isPending, isError, error} = useMutation({
 		mutationFn: async({username, password}) => {
@@ -30,12 +32,14 @@ const LoginPage = () => {
 				if(!res.ok){
 					throw new Error(data.error || "Something went wrong");
 				}
+
 			} catch (error) {
 				throw new Error(error);
 			}
 		},
 		onSuccess: () => {
-			toast.success("Login Successful")
+			// this means that data is not fresh so we have to invalidate that check the data again 
+			queryClient.invalidateQueries({queryKey: ["authUser"]})
 		}
 	})
 
