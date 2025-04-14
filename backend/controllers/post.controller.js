@@ -90,7 +90,9 @@ export const commentOnPost = async (req,res) => {
         post.comments.push(comment)
         await post.save();
 
-        res.status(200).json(post)
+        const updatedComments = await Post.findById(postId).populate("comments")
+        
+        res.status(200).json(updatedComments)
 
     } catch (error) {
         console.log("Error in commentOnPost controller", error.message);
