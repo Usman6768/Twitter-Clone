@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import useFollow from "../../hooks/useFollow"
 import { Link, useParams } from "react-router-dom";
 
 import Posts from "../../components/common/Posts";
@@ -22,10 +23,12 @@ const ProfilePage = () => {
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
 
-	const isMyProfile = true;
 
 	const {username} = useParams();
 
+	const {follow, isPending} = useFollow()
+
+	const {data: authUser} = useQuery({queryKey: ['authUser']})
 
 	const {data: user, isLoading, refetch, isRefetching} = useQuery({
 		queryKey: ['userProfile'],
@@ -43,7 +46,11 @@ const ProfilePage = () => {
 		}
 	})
 
+	const isMyProfile = authUser._id === user?._id
+
 	const memberSinceDate = formatMemberSinceDate(user?.createdAt)
+
+	const amIFollowing = authUser?.following.includes(user?._id) // this means user is following authUser
 
 	const handleImgChange = (e, state) => {
 		const file = e.target.files[0];
@@ -129,9 +136,12 @@ const ProfilePage = () => {
 								{!isMyProfile && (
 									<button
 										className='btn btn-outline rounded-full btn-sm'
-										onClick={() => alert("Followed successfully")}
+										onClick={() => follow(user?._id)}
 									>
-										Follow
+										{isPending && "Loading..."}
+										{!isPending && amIFollowing && "Unfollow"}
+										{!isPending && !amIFollowing && "Follow"}
+
 									</button>
 								)}
 								{(coverImg || profileImg) && (
