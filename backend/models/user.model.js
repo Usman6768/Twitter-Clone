@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    campus: {
+        type: String,
+        required: true
+    },
     followers: [
         {
             type: mongoose.Schema.Types.ObjectId,
