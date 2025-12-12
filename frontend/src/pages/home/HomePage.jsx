@@ -4,7 +4,7 @@ import Posts from "../../components/common/Posts";
 import CreatePost from "./CreatePost";
 
 const HomePage = () => {
-	const [feedType, setFeedType] = useState("campus");
+	const [feedType, setFeedType] = useState("forYou");
 
 	return (
 		<>
@@ -15,10 +15,10 @@ const HomePage = () => {
 						className={
 							"flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative"
 						}
-						onClick={() => setFeedType("campus")}
+						onClick={() => setFeedType("forYou")}
 					>
-						Campus Feed
-						{feedType === "campus" && (
+						For You
+						{feedType === "forYou" && (
 							<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
 						)}
 					</div>
@@ -28,24 +28,6 @@ const HomePage = () => {
 					>
 						Following
 						{feedType === "following" && (
-							<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
-						)}
-					</div>
-					<div
-						className='flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative'
-						onClick={() => setFeedType("all-campuses")}
-					>
-						All Campuses
-						{feedType === "all-campuses" && (
-							<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
-						)}
-					</div>
-					<div
-						className='flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative'
-						onClick={() => setFeedType("global")}
-					>
-						Global
-						{feedType === "global" && (
 							<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
 						)}
 					</div>
